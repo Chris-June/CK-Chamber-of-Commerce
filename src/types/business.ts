@@ -1,20 +1,36 @@
 export interface Business {
   id: string;
+  slug: string;
   name: string;
   description: string;
   logo: string;
   coverImage: string;
+  additionalImages?: string[]; // Added optional additionalImages property
   features: BusinessFeature[];
   contact: ContactInfo;
   socialMedia: SocialMedia;
   location: Location;
   isVerified?: boolean; // Indicates if the business is verified
-  promotion?: string; // Current promotion or special offer
+  promotion?: {
+    text: string;
+    url?: string; // Optional URL for the promotion
+  }; // Current promotion or special offer
   categories?: string[]; // Tags or categories for the business
   ratings?: BusinessRatings; // Ratings information
   reviews?: BusinessReview[]; // Array of reviews (new)
   hours?: BusinessHours; // Business hours
   isOpen?: boolean; // Indicates if the business is currently open (new)
+  chatWidget?: IntelliSyncConfig;
+  faq?: BusinessFAQ[]; // FAQ section (new)
+}
+
+export interface IntelliSyncConfig {
+  scriptSrc: string;
+  scriptAttributes: {
+    'data-intellisync-id': string;
+    defer?: boolean;
+    type?: string;
+  };
 }
 
 export interface BusinessFeature {
@@ -63,4 +79,9 @@ export interface BusinessReview {
 export interface BusinessHours {
   open: string; // Opening time in "HH:mm" format
   close: string; // Closing time in "HH:mm" format
+}
+
+export interface BusinessFAQ {
+  question: string;
+  answer: string;
 }

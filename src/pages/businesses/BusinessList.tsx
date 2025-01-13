@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Search, SlidersHorizontal } from 'lucide-react';
 import BusinessCard from './BusinessCard';
 import { mockBusinesses } from './mockData';

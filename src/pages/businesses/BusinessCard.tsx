@@ -1,6 +1,5 @@
-import React from 'react';
 import { MapPin, Star, Phone, Globe } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { Business } from '../../types/business';
 
 interface BusinessCardProps {
@@ -8,8 +7,17 @@ interface BusinessCardProps {
 }
 
 export default function BusinessCard({ business }: BusinessCardProps) {
+  const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    navigate(`/businesses/${business.slug}`);
+  };
+
   return (
-    <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-[1.02] hover:shadow-xl">
+    <div 
+      className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-[1.02] hover:shadow-xl cursor-pointer"
+      onClick={handleViewDetails}
+    >
       <div className="relative h-48">
         <img
           src={business.coverImage}
@@ -49,7 +57,15 @@ export default function BusinessCard({ business }: BusinessCardProps) {
         {/* Promotion */}
         {business.promotion && (
           <div className="mb-4 p-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 text-sm rounded-lg shadow">
-            {business.promotion}
+            {business.promotion.text}
+            {business.promotion.url && (
+              <Link 
+                to={business.promotion.url} 
+                className="ml-2 text-blue-800 hover:underline"
+              >
+                Learn More
+              </Link>
+            )}
           </div>
         )}
 
@@ -104,14 +120,14 @@ export default function BusinessCard({ business }: BusinessCardProps) {
             </ul>
           </div>
         )}
-
-        {/* View Details Button */}
-        <Link
-          to={`/businesses/${business.id}`}
-          className="mt-6 block w-full text-center bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-lg hover:from-blue-500 hover:to-blue-600 transition-all shadow"
+      </div>
+      <div className="p-6 border-t border-gray-700 flex justify-center">
+        <button 
+          onClick={handleViewDetails} 
+          className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors"
         >
           View Details
-        </Link>
+        </button>
       </div>
     </div>
   );
