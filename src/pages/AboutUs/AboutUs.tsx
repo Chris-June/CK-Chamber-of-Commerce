@@ -1,37 +1,131 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ExecutiveDirectorsCard } from '@/components/ui/Modals/AboutUsModals/ExecutiveDirectorsModal';
+import { DirectorsCard } from '@/components/ui/Modals/AboutUsModals/DirectorsModal';
+import { CommitteesCard } from '@/components/ui/Modals/AboutUsModals/CommitteesModal';
+import { ExecutiveDirector } from '@/components/ui/Modals/AboutUsModals/executiveDirectorsData';
+import { BoardDirector } from '@/components/ui/Modals/AboutUsModals/boardDirectorsData';
+import { boardDirectors } from '@/components/ui/Modals/AboutUsModals/boardDirectorsData';
+import { committees } from '@/components/ui/Modals/AboutUsModals/committeesData';
+import { ValuesCard, ValuesModal } from '@/components/ui/Modals/AboutUsModals/ValuesModal';
+import { valuesData, Value } from '@/components/ui/Modals/AboutUsModals/valuesData';
+import { teamMembers } from '@/components/ui/Modals/AboutUsModals/teamData';
+import { TeamModal, TeamMemberCard, TeamMember } from '@/components/ui/Modals/AboutUsModals/TeamModal';
+import { ExecutiveDirectorsModal } from '@/components/ui/Modals/AboutUsModals/ExecutiveDirectorsModal';
+import { DirectorsModal } from '@/components/ui/Modals/AboutUsModals/DirectorsModal';
 
 // Executive Directors Data
-const executiveDirectors = [
-  { name: 'Director 1', position: 'Executive Director', image: '/path/to/director1.jpg' },
-  { name: 'Director 2', position: 'Executive Director', image: '/path/to/director2.jpg' },
-  { name: 'Director 3', position: 'Executive Director', image: '/path/to/director3.jpg' },
-  { name: 'Director 4', position: 'Executive Director', image: '/path/to/director4.jpg' },
-  { name: 'Director 5', position: 'Executive Director', image: '/path/to/director5.jpg' },
-];
-
-// Board Directors Data
-const boardDirectors = [
-  { name: 'Director 6', position: 'Board Director', image: '/path/to/director6.jpg' },
-  { name: 'Director 7', position: 'Board Director', image: '/path/to/director7.jpg' },
-  { name: 'Director 8', position: 'Board Director', image: '/path/to/director8.jpg' },
-  { name: 'Director 9', position: 'Board Director', image: '/path/to/director9.jpg' },
-  { name: 'Director 10', position: 'Board Director', image: '/path/to/director10.jpg' },
-  { name: 'Director 11', position: 'Board Director', image: '/path/to/director11.jpg' },
-  { name: 'Director 12', position: 'Board Director', image: '/path/to/director12.jpg' },
-  { name: 'Director 13', position: 'Board Director', image: '/path/to/director13.jpg' },
-];
-
-// Team Members Data
-const teamMembers = [
-  { name: 'Rory Ring', position: 'CEO', image: '/path/to/rory-ring.jpg' },
-  { name: 'Sarah St. Pierre', position: 'Manager of Administration', image: '/path/to/sarah-st-pierre.jpg' },
+const executiveDirectors: ExecutiveDirector[] = [
+  { 
+    id: 'bj-griffiths',
+    name: 'B.J. Billy-Jo Griffiths', 
+    role: 'Chair', 
+    organization: 'Royal Bank',
+    imageUrl: '/path/to/bj-griffiths.jpg',
+    personalMessage: 'Leading our chamber with strategic vision and commitment.',
+    chamberImportance: 'Providing strategic direction and leadership for the Chatham-Kent business community.'
+  },
+  { 
+    id: 'sarah-molnar',
+    name: 'Sarah Molnar', 
+    role: 'Chair-Elect', 
+    organization: 'Paragon Property Management',
+    imageUrl: '/path/to/sarah-molnar.jpg',
+    personalMessage: 'Committed to fostering growth and innovation in our local business ecosystem.',
+    chamberImportance: 'Supporting strategic initiatives and preparing for future leadership.'
+  },
+  { 
+    id: 'amanda-clark',
+    name: 'Amanda Clark', 
+    role: 'Vice Chair', 
+    organization: 'BGC of Chatham-Kent',
+    imageUrl: '/path/to/amanda-clark.jpg',
+    personalMessage: 'Dedicated to strengthening community connections and business partnerships.',
+    chamberImportance: 'Driving collaborative efforts and supporting chamber objectives.'
+  },
+  { 
+    id: 'aaron-ryan',
+    name: 'Aaron Ryan', 
+    role: 'Treasurer', 
+    organization: 'Chatham-Kent Health Alliance',
+    imageUrl: '/path/to/aaron-ryan.jpg',
+    personalMessage: 'Ensuring financial integrity and strategic resource management.',
+    chamberImportance: 'Providing financial oversight and supporting fiscal responsibility.'
+  },
+  { 
+    id: 'ryan-organ',
+    name: 'Ryan Organ', 
+    role: 'Past Chair', 
+    organization: 'Enbridge',
+    imageUrl: '/path/to/ryan-organ.jpg',
+    personalMessage: 'Bringing continuity and experience to our chamber\'s leadership.',
+    chamberImportance: 'Offering historical perspective and supporting leadership transition.'
+  }
 ];
 
 const AboutUs: React.FC = () => {
+  // Values state
+  const [selectedValue, setSelectedValue] = useState<Value | null>(null);
+  const [isValuesModalOpen, setIsValuesModalOpen] = useState(false);
+
+  // Executive Directors state
+  const [selectedExecutiveDirector, setSelectedExecutiveDirector] = useState<ExecutiveDirector | null>(null);
+  const [isExecutiveModalOpen, setIsExecutiveModalOpen] = useState(false);
+
+  // Board Directors state
+  const [selectedBoardDirector, setSelectedBoardDirector] = useState<BoardDirector | null>(null);
+  const [isBoardDirectorModalOpen, setIsBoardDirectorModalOpen] = useState(false);
+
+  // Team Members state
+  const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+
+  // Values handlers
+  const handleLearnMore = (value: Value) => {
+    setSelectedValue(value);
+    setIsValuesModalOpen(true);
+  };
+
+  const handleCloseValuesModal = () => {
+    setIsValuesModalOpen(false);
+    setSelectedValue(null);
+  };
+
+  // Executive Directors handlers
+  const handleExecutiveDirectorClick = (director: ExecutiveDirector) => {
+    setSelectedExecutiveDirector(director);
+    setIsExecutiveModalOpen(true);
+  };
+
+  const handleCloseExecutiveModal = () => {
+    setIsExecutiveModalOpen(false);
+    setSelectedExecutiveDirector(null);
+  };
+
+  // Board Directors handlers
+  const handleBoardDirectorClick = (director: BoardDirector) => {
+    setSelectedBoardDirector(director);
+    setIsBoardDirectorModalOpen(true);
+  };
+
+  const handleCloseBoardDirectorModal = () => {
+    setIsBoardDirectorModalOpen(false);
+    setSelectedBoardDirector(null);
+  };
+
+  // Team Members handlers
+  const handleTeamMemberClick = (member: TeamMember) => {
+    setSelectedTeamMember(member);
+    setIsTeamModalOpen(true);
+  };
+
+  const handleCloseTeamModal = () => {
+    setIsTeamModalOpen(false);
+    setSelectedTeamMember(null);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 space-y-12">
       {/* Who We Are Section */}
@@ -61,36 +155,22 @@ const AboutUs: React.FC = () => {
           <TabsContent value="executive">
             <div className="grid md:grid-cols-3 gap-6">
               {executiveDirectors.map((director, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <Avatar className="w-24 h-24 mx-auto mb-4">
-                      <AvatarImage src={director.image} alt={director.name} />
-                      <AvatarFallback>{director.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
-                    <CardTitle className="text-center">{director.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-center text-muted-foreground">{director.position}</p>
-                  </CardContent>
-                </Card>
+                <ExecutiveDirectorsCard 
+                  key={index} 
+                  director={director} 
+                  onClick={() => handleExecutiveDirectorClick(director)} 
+                />
               ))}
             </div>
           </TabsContent>
           <TabsContent value="board">
             <div className="grid md:grid-cols-4 gap-6">
               {boardDirectors.map((director, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <Avatar className="w-24 h-24 mx-auto mb-4">
-                      <AvatarImage src={director.image} alt={director.name} />
-                      <AvatarFallback>{director.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
-                    <CardTitle className="text-center">{director.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-center text-muted-foreground">{director.position}</p>
-                  </CardContent>
-                </Card>
+                <DirectorsCard 
+                  key={index} 
+                  director={director} 
+                  onClick={() => handleBoardDirectorClick(director)} 
+                />
               ))}
             </div>
           </TabsContent>
@@ -102,18 +182,11 @@ const AboutUs: React.FC = () => {
         <h2 className="text-3xl font-bold text-primary mb-6">Meet the Team</h2>
         <div className="grid md:grid-cols-2 gap-6">
           {teamMembers.map((member, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Avatar className="w-32 h-32 mx-auto mb-4">
-                  <AvatarImage src={member.image} alt={member.name} />
-                  <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                </Avatar>
-                <CardTitle className="text-center">{member.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center text-muted-foreground">{member.position}</p>
-              </CardContent>
-            </Card>
+            <TeamMemberCard 
+              key={index} 
+              member={member} 
+              onLearnMore={() => handleTeamMemberClick(member)} 
+            />
           ))}
         </div>
       </section>
@@ -137,39 +210,9 @@ const AboutUs: React.FC = () => {
       <section>
         <h2 className="text-3xl font-bold text-primary mb-6">Our Committees</h2>
         <div className="grid md:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Agriculture Committee</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>Mandate: To represent the interests of Chatham-Kent's agricultural industry, develop partnerships, 
-                promote recognition for farmers, and raise public awareness of the agricultural sector's contribution 
-                to the local economy and community.</p>
-              <p className="mt-4 font-semibold">Meeting Date: Second Tuesday of each month</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Advocacy & Government Relations Committee</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>Mandate: Monitor legislative proposals at all government levels, offer input to ensure lawmakers 
-                recognize the needs and views of our constituency. The committee will track local issues and 
-                regularly report to the Board.</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Policy & Governance Committee</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>Mandate: Ensure all governing documents, policies, and procedures are developed, reviewed, and 
-                updated to remain consistent with the Chatham-Kent Chamber of Commerce Vision, Mission, Values, 
-                and Goals.</p>
-            </CardContent>
-          </Card>
+          {committees.map((committee, index) => (
+            <CommitteesCard key={index} committee={committee} />
+          ))}
         </div>
       </section>
 
@@ -192,36 +235,52 @@ const AboutUs: React.FC = () => {
       {/* Our Values Section */}
       <section>
         <h2 className="text-3xl font-bold text-primary mb-6">Our Values</h2>
-        <div className="grid md:grid-cols-2 gap-6">
-          {[
-            { 
-              title: 'Integrity', 
-              description: "We build trust through integrity in everything we do. We earn loyalty by doing what we say and always doing what's right." 
-            },
-            { 
-              title: 'Diversity', 
-              description: 'We embrace diversity for growth and innovation. We represent universal environments and generate groundbreaking solutions.' 
-            },
-            { 
-              title: 'Inclusion', 
-              description: 'We embody inclusion by responding to shifting demographics. We grow by respecting and leveraging our differences.' 
-            },
-            { 
-              title: 'Accountability', 
-              description: 'We accept personal responsibility for high performance. We take ownership of our actions and strive to achieve more.' 
-            }
-          ].map((value, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle>{value.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>{value.description}</p>
-              </CardContent>
-            </Card>
+        <div className="grid md:grid-cols-3 gap-6">
+          {valuesData.map((value, index) => (
+            <ValuesCard 
+              key={index} 
+              value={value} 
+              onLearnMore={() => handleLearnMore(value)} 
+            />
           ))}
         </div>
       </section>
+
+      {/* Values Modal */}
+      {selectedValue && (
+        <ValuesModal 
+          isOpen={isValuesModalOpen} 
+          onClose={handleCloseValuesModal} 
+          value={selectedValue} 
+        />
+      )}
+
+      {/* Executive Directors Modal */}
+      {selectedExecutiveDirector && (
+        <ExecutiveDirectorsModal 
+          isOpen={isExecutiveModalOpen}
+          onClose={handleCloseExecutiveModal}
+          director={selectedExecutiveDirector}
+        />
+      )}
+
+      {/* Board Directors Modal */}
+      {selectedBoardDirector && (
+        <DirectorsModal 
+          isOpen={isBoardDirectorModalOpen}
+          onClose={handleCloseBoardDirectorModal}
+          director={selectedBoardDirector}
+        />
+      )}
+
+      {/* Team Modal */}
+      {selectedTeamMember && (
+        <TeamModal 
+          isOpen={isTeamModalOpen}
+          onClose={handleCloseTeamModal}
+          member={selectedTeamMember}
+        />
+      )}
     </div>
   );
 };
